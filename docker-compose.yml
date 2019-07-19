@@ -1,0 +1,46 @@
+version: '2'
+services:
+  redis:
+    image: redis:latest
+    # container_name: my-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - api
+
+  node:
+    build: .
+    links:
+       - redis
+    networks:
+      - api
+
+    ports:
+        - "3030:3030"
+    volumes:
+        - .:/usr/src/app
+        # - /usr/src/app/node_modules
+    user: '1000'
+    command: yarn run dev
+    environment:
+      - REDIS_URL=redis://redis
+      - PORT=3030
+
+  worker:
+    build: .
+    links:
+       - redis
+    networks:
+      - api
+
+    volumes:
+        - .:/usr/src/app
+        # - /usr/src/app/node_modules
+    user: '1000'
+    command: yarn run worker
+    environment:
+      - REDIS_URL=redis://redis
+      - PORT=3030
+
+networks:
+  api:
