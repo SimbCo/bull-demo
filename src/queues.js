@@ -28,15 +28,15 @@ const config = {
         redis: getRedisConfig(process.env.REDIS_URL)
     },
 };
-const scheduler = new Queue(config.scheduler);
-const daily = new Queue(config.daily);
-const runner = new Queue(config.runner);
+// const scheduler = new Queue(config.scheduler);
+// const daily = new Queue(config.daily);
+// const runner = new Queue(config.runner);
 
 const data = {
-    queues: [ scheduler, daily, runner ],
-    scheduler,
-    daily,
-    runner,
+    // queues: [ scheduler, daily, runner ],
+    // scheduler,
+    // daily,
+    // runner,
     config
 }
 
