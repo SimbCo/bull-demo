@@ -1,4 +1,5 @@
 const url = require('url');
+const Queue = require('bull');
 
 // BULL-ARENA
 function getRedisConfig(redisUrl) {
@@ -10,25 +11,34 @@ function getRedisConfig(redisUrl) {
         password: redisConfig.auth ? redisConfig.auth.split(':')[1] : undefined
     };
 }
-
-const scheduler = {
-    name: 'scheduler',
-    hostId: 'SimBco',
-    redis: getRedisConfig(process.env.REDIS_URL)
+const config = {
+    scheduler: {
+        name: 'scheduler',
+        hostId: 'SimBco',
+        redis: getRedisConfig(process.env.REDIS_URL)
+    },
+    daily: {
+        name: 'daily',
+        hostId: 'SimBco',
+        redis: getRedisConfig(process.env.REDIS_URL)
+    },
+    runner: {
+        name: 'runner',
+        hostId: 'SimBco',
+        redis: getRedisConfig(process.env.REDIS_URL)
+    },
 };
+const scheduler = new Queue(config.scheduler);
+const daily = new Queue(config.daily);
+const runner = new Queue(config.runner);
 
-const daily = {
-    name: 'daily',
-    hostId: 'SimBco',
-    redis: getRedisConfig(process.env.REDIS_URL)
-};
-
-const runner = {
-    name: 'runner',
-    hostId: 'SimBco',
-    redis: getRedisConfig(process.env.REDIS_URL)
-};
-
-module.exports = {
-    queues: [ scheduler, daily, runner ]
+const data = {
+    queues: [ scheduler, daily, runner ],
+    scheduler,
+    daily,
+    runner,
+    config
 }
+
+
+module.exports = data;

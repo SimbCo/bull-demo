@@ -1,14 +1,14 @@
 const Arena = require('bull-arena');
 const morgan = require('morgan');
 const express = require('express');
-const queues = require('./queues').queues;
+const queues = require('./queues');
 
 const app = express()
 const port = process.env.PORT || 3000
 
 app.use('/bull', Arena(
     {
-        queues
+        queues: Object.keys(queues.config).map( it => queues.config[it])
     },
     {
         basePath: '/arena',
